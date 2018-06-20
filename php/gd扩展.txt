@@ -1,0 +1,84 @@
+GD扩展库
+    PHP不仅仅可以产生HTML的输出，还可以用于输出和处理各种格式的图像
+    
+    GD库是php处理图形的扩展库，可以处理或生成如jpg、png、GIF等格式的图像文件！可以用于验证码、图像缩放、图像加水印、图像裁剪等方面！
+
+如何开启GD扩展库
+    1.查看是否开启
+        phpinfo();
+    2.如果没有开启，修改php.ini配置文件
+        搜索: php_gd
+        将 extension=php_gd2.dll 前面的分号去掉
+
+        贴心小提示：在配置文件中;表示注释
+    3.重启Apache服务器
+        贴心小提示：修改完任何配置后都要重启Apache才能生效
+
+相关函数：
+    imagecreatetruecolor(宽, 高);
+        创建一张画布
+    imagecolorallocate(资源, 红, 绿, 蓝);
+        给画布分配一种颜色
+    imagefill(资源, x轴, y轴, 分配的颜色);
+        填充区域为指定颜色(与x，y点颜色相同且相邻的点都会被填充)
+    imagepng(资源);
+        将资源图像以png格式输出到浏览器；需要配合header头使用，不然浏览器不认识
+    header('Content-type:image/png');
+        告诉浏览器我输出的是png的图片
+    imagedestroy(资源)
+        手动销毁图像资源，以便释放内存空间
+
+    画点 imagesetpixel(资源, x轴, y轴, 颜色);
+    画线 imageline(资源, x轴1, y轴1, x轴2, y轴2, 颜色);
+    画矩形
+        1.矩形框框
+            imagerectangle(资源, x轴1, y轴1, x轴2, y轴2, 颜色);
+        2.画实心矩形
+            imagefilledrectangle(资源, x轴1, y轴1, x轴2, y轴2, 颜色);
+    画圆
+        1、画空心椭圆
+            imageellipse(资源, 圆心x, 圆心y, 宽, 高, 颜色);
+        2、画实心圆
+            imagefilledellipse(资源, 圆心x, 圆心y, 宽, 高, 颜色);
+
+    画圆弧
+        1、画弧线
+            imagearc(资源, 圆心x, 圆心y, 宽, 高, 开始角度, 结束角度, 颜色);
+
+            注：角度为0表示正3点钟方向
+        2、画弧线并填充
+            imagefilledarc(资源, 圆心x, 圆心y, 宽, 高, 开始角度, 结束角度, 颜色, 填充方式);
+
+    写字符：
+        1、水平写一个字符
+            imagechar(资源, 字体大小, x轴, y轴, 字符, 颜色);
+                只能写1个字符，而且大小最大才5！
+        2、垂直写一个字符
+            imagecharup(资源, 字体大小, x轴, y轴, 字符, 颜色);
+                只能写1个字符，而且大小最大才5！
+        3、用指定字体写文本(常用)
+            imagefttext(资源, 字体大小, 角度, x轴, y轴, 颜色, 字体文件, 字符串);
+
+PHP图片处理
+    以前都是自己创建，现在打开一个现成的
+        imagecreatefromjpeg(路径) //打开1个jpg/jpeg的图片
+        imagecreatefrompng(路径)  //打开1个png的图片
+        imagecreatefromgif(路径)  //打开1个gif的图片
+
+    获取图片宽高
+        imagesx(资源);
+        imagesy(资源);
+        getimagesize(路径);   //获取图片详细信息
+
+    裁剪或缩放
+        就是从原图片中抠出一部分，放到新的目标图片中；抠出来的宽高和目标一样就是裁剪，抠出来的更大就是缩放
+        imagecopyresampled(目标资源, 原资源, 目标X, 目标Y, 原图X, 原图Y, 目标宽, 目标高, 原图宽, 原图高);
+
+    给图片加水印
+        1、文字水印
+            就是用imagefttext()往图片上写字就行了
+        2、图片水印
+            imagecopymerge(目标背景图, logo图, 目标X, 目标Y, logo图X, logo图Y, logo宽, logo高, 透明度0~100)
+    图片旋转
+        imagerotate(资源图片, 角度, 颜色)
+        注意：返回旋转后的图像资源，所以最终输出这个资源

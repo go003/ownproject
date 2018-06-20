@@ -1,0 +1,343 @@
+数据库
+	数据库是计算机应用系统中的一种专门管理数据资源的系统。数据库就是一组经过计算机整理后的数据，存储在一个或者多个文件中，而管理这个数据库的软件就称为数据库管理系统。常见的软件开发中应用数据库有IBM的DB2，Oracle，SQL Server，PostgreSQL，MySQL，Access等。
+
+
+DBS 数据库系统
+	DB 		数据库
+		Database
+	DBMS 	数据库管理系统
+		Database Management System
+	DBA 	数据库管理员
+		Database Administrator
+
+SQL结构化查询语言
+	SQL是一种专门用于查询和修改数据库里的数据，以及对数据库进行管理和维护的标准化语言
+
+	数据定义语言（DDL）：用于定义和管理数据对象，包括数据库，数据表等。例如：CREATE，DROP，ALTER等。
+	数据操作语言（DML）：用于操作数据库对象中所包含的数据。例如：INSERT，UPDATE，DELETE语句。
+	数据查询语言（DQL）：用于查询数据库对象中所包含的数据，能够进行单表查询，连接查询，嵌套查询，以及集合查询等各种复杂程度不同的数据库查询，并将数据返回客户机中显示。例如：SELETE
+	数据控制语言（DCL）：是用来管理数据库的语言，包括管理权限及数据更改。例如：GRANT，REVOKE，COMMIT，ROLLBACK等。
+
+关系型数据库
+	以行和列的形式存储数据，这一系列的行和列被称为表，一堆表组成了数据库，一堆库组成了咱们的数据库服务器
+
+mysql的连接
+	mysql -u用户名 -p密码 -h服务器地址
+注意：
+	1.每个SQL命令都需要使用分号来完成
+	2.可以将一行命令拆成多行
+	3.可以通过\c、ctrl+c来取消本行命令
+	4.可以通过\q、exit或者quit来退出当前客户端
+
+常见操作
+	显示帮助信息：\h(同help命令)
+	将查询后的数据立起来：\G
+	取消当前未完成的操作：\c
+	退出当前客户端：\q
+	显示当前服务器状态：\s
+	更改执行符：\d
+
+数据库的基本操作
+	-- 查看所有的数据库
+		show databases;
+	-- 选择数据库
+		use 库名;
+	-- 创建数据库;库名已存在报错
+		create database 库名;
+		create database if not exists 库名;
+		create database 库名 default charset=utf8; --指定默认字符集
+	-- 删除数据库;库名不存在报错
+		drop database 库名;
+		drop database if exists 库名;
+
+表的基本操作
+	-- 查看所有数据表
+		show tables;
+	-- 创建数据表;
+		create table 表名(
+			字段1 类型,
+			字段2 类型,
+			字段3 类型
+		)engine=innodb default charset=utf8;
+		注意：字符集为utf8，少个-
+	-- 查看表结构
+		desc 表名;
+
+	-- 删除数据表
+		drop table 表名;
+
+数据相关操作
+	-- 插入数据
+	insert into 表名 (字段1,字段2...) values(值1,值2...);
+	-- 查看数据
+	select `字段1`,`字段2` from 表名;
+	select * from 表名;
+	-- 修改数据
+	update 表名 set 字段1='值1',字段2='值2'... where 条件;
+	-- 删除数据
+	delete from 表名 where 条件;
+
+	注意：
+		1.字段名的反引号``可以省略，关键字除外;
+		2.所有的字符串值都需要加引号'';
+		3.所有修改和删除不加where条件都是耍流氓！
+
+
+
+数据类型
+    1、定义数据表时，会指定数据的类型，整型、浮点型、字符串、日期、枚举、集合类型
+    根据你里面存什么东西来选择用什么类型。
+
+    整型 
+		tinyint
+			取值范围
+				有符号：-128 ~ 127
+				无符号：0 ~ 255  unsigned
+			占1个字节
+			可以用于存年龄、标记，比如商品的状态：1新添加，2表示在售中，3已下架；订单状态、性别
+		smallint 占2个字节
+		mediumint 占3个字节
+		int 	占4个字节
+			取值范围
+				有符号：正负二十多个亿
+				无符号：0~40多个亿
+			用于计数、时间戳
+		bigint 占8个字节
+
+		注意：
+			1.存入小数会四舍五入
+			2.超出取值范围报错
+				非严格模式下，取最大值存入
+			3.int(5)表示的只是显示宽度，并不是限定只能插入5位数，它具体的取值范围，由类型所决定
+
+    浮点 float  6,2 9999.99
+        定点数和浮点数都可以使用类型名后面加(M,D)方式来表示。(M,D)表示该类型一共显示出M位数字（整数位+小数位），D为小数点后面几位
+    	float(浮点型)
+		double(双精度)
+			可以表示的范围更广，精度更高
+		decimal(定点数)
+			默认为(10,0)
+			比float更精确
+
+		注意：
+			1.当小数超出规定长度，采用四舍五入保存
+			2.超出整数范围，报错，无法插入
+
+        2、decimal和double的不同点
+            定点数如果不写精度和标度会按照decimal（10,0）来进行操作。如果超出了精度和标度，也会进行四舍五入。定点数的存储使用二进制进行存储所以比较准确。
+
+            注意：
+                1、浮点数会存在误差。
+                2、对于精度比较敏感的数据应该用定点数来进行表示。
+
+    字符串
+        char和varchar很类似，都可以用来存储MySQL中较短的字符串，区别：
+            1、char列的长度为固定长度，创建表的时候声明的最大长度，可以为0～255
+            2、varchar值可变长度，长度为0～65535之间的值。
+            3、char和varchar在超出指定的长度时都会报错(非严格模式下被截取到指定长度的字符串)。
+
+            4、text和blob，二者之间的区别是blob用来保存二进制数据，text只能保存字符串数据。
+            5、blob和text在经过大量的删除操作之后有可能会引起性能问题。（删除以后在数据表中留下“空洞”）
+            可以使用 optimize table 表名 来回收这些空间。
+
+    总结：
+    	int 4个字节  正负20多个亿或者0~40多个亿
+    	tinyint 1个字节 正负127左右 或者 0~255
+
+    	decimal(10,2) 最多10位，其中有两位小数：99999999.99
+
+    	char(32) 定长
+    	varchar(255) 不定长 length + 1
+
+
+
+约束条件：对字段进行一些约束用的
+    1、null、not null，插入值时没有在字段中插入一个值，默认为null。
+    指定not null必须在插入值时在该字段中插入一个值。如果不给插入一个值那么为"空"
+
+    2、default 默认值在不插入该字段时默认插入的值。
+
+    整型的约束条件：
+        1、zerofill表示0填充。一般和整型后面设定的宽度一起使用，如果数值长度小于指定的长度那么将会在前面补充相对应的0进行填充。
+        2、unsigned（无符号）如果要在字段里面保存非负数，或者较大上限的值时可使用该约束条件，将从0开始，需要在字段类型后面紧跟着定义unsigned
+	        mysql> create table t9(
+	        -> id int unsigned not null,
+	        -> name char(32)
+	        -> );
+
+        3、auto_increment，自增，在产生一个唯一的标识或顺序值的时候，可以利用这个约束条件。这个约束条件只能用于整数类型，值一般从1开始。每行加1，插入一个null到一个auto_increment列时，MySQL将插入一个比出现过的最大值+1的值。一个表中只能有一个auto_increment列，并且必须定义为primary key或unique才能够使用
+	        mysql> create table t1(
+            -> id int unsigned auto_increment primary key,
+            -> name char(32)
+            -> );
+
+索引
+	索引是数据库中用来提高搜索性能的。我们通常在做数据库优化的时候通常先做索引的优化，数据量少的时候没效果，数据越多效果越明显。索引加上之后是自动创建的，不是我们刻意去使用的。
+
+索引的分类：
+    1、常规索引（index），最基本的索引，没有任何限制
+    	创建索引:
+	        create table 表名(
+	        字段.....,
+	        index 索引名 (要索引的字段)
+	        );
+
+	        mysql> create table t2(
+	        -> id int unsigned,
+	        -> name char(32)
+	        -> ,index id(id)
+	        -> );
+
+        表已经创建的情况下:
+            create index 索引名 on 表名(要加索引的字段);
+            mysql> create index id on t3(id);
+
+	    删除索引：
+	        drop index 索引名 on 表名
+
+    2、唯一索引（unique）与普通索引相似，但是索引列里面的值必须是唯一的，允许有空值
+
+	    创建索引：
+	        create table 表名(
+	        字段....,
+	        unique 索引名(要索引的字段)
+	        );
+
+		    mysql> create table t4(
+		    -> id int unsigned,
+		    -> name char(32),
+		    -> unique id(id)
+		    -> );
+
+        表已经创建的情况下:
+		    create unique index 索引名 on 表名(要索引的字段)
+		    mysql> create unique index id on t5(id);
+
+	    删除索引：
+	        drop index 索引名 on 表名
+
+
+    3、主键索引（primary key），和唯一索引类似，也是唯一的，一个表只能有一个主键
+	    创建索引：
+	        create table 表名(
+	        id int unsigned auto_increment primary key,
+	        name char(32)
+	        );
+
+	    删除索引：
+	        alter table 表名 drop primary key
+	        mysql> alter table t7 drop primary key;
+
+	        注意：如果主键的字段上面有自增（auto_increment）那么需要先将auto_increment去掉。然后再删除。
+
+	        alter table 表名 change 自增的列  自增的列  类型
+
+	        mysql> alter table t6 change idaaaaa id int primary key;
+
+
+
+-- 字符集的设置
+	mysql的字符集分为4个级别：
+		服务器级别
+		库级别
+		表级别
+		字段级别
+
+	库级别
+		1.查看数据库的字符集
+		show create database 库名;
+		2.建库的时候指定字符集
+		create database hehe default charset=utf8;
+		3.修改库的字符集
+		alter database gz24 default charset=utf8;
+
+	表级别：
+		1.查看表的字符集
+		show create table s1;
+		2.建表的时候指定字符集
+		参考之前的
+		3.修改表的字符集
+		alter table s1 default charset=utf8;
+
+	注意：没有指定字符集的时候，默认是向上继承
+
+
+-- 表的修改(大多数都可以在软件里面改)
+	1.修改表的名字
+		alter table 旧表名 rename 新表名
+	-- 2.改字段的类型
+	alter table s1 modify name char(30) not null;
+	-- 3.改字段名
+	alter table s1 change 原字段名 新字段名 varchar(30) default 'no';
+	-- 4.添加新字段
+	alter table s1 add sex enum('m', 'w', 'y') not null default 'm';
+	alter table s1 add des varchar(255) first;
+	alter table s1 add des2 varchar(255) after id;
+	-- 5.删除字段
+	alter table s1 drop des2;
+	-- *6.修改表的存储引擎
+	alter table s1 engine=myisam;
+	-- *7.修改表的字符集
+	alter table s1 charset=utf8;
+	alter table s1 default charset=utf8;
+
+
+-- 数据操作语言(DML)
+	1.insert 增 
+		1.可以插入单条语句
+		insert into 表名 value();
+		2.插入多条语句
+		insert into 表名 values(),()...;
+		3.指定字段
+		insert into 表名(字段1,字段2...) values(),();
+		注意：没有指定字段的情况下，必须将所有的字段都一一赋值
+	2.update 改
+		update 表名 set 字段1=值1,字段2=值2... where 条件;
+	3.delete 删
+		delete from 表名 where 条件;
+
+
+-- 数据查询语言(DQL)
+	select语句
+	1.查所有
+	select * from 表名;
+	2.查询指定字段
+	select 字段1,字段2... from 表名;
+	3.给字段指定别名
+	select 字段1 as 别名,字段2 from 表名;
+	-- as可以省略
+	select 字段1 别名,字段2 from 表名;
+	5.在select中使用表达式
+	运算符：+ - * / %
+	函数：
+		md5()  md5加密
+		password()  mysql的加密
+		unix_timestamp() Unix时间戳(和php中time()返回的一样)
+		concat() 将两个字段连接查询
+	
+    6.where条件
+	and 和 or    && 和 ||
+	is null 和 is not null
+	between 和 not between 
+		select * from exam_type where id between 3 and 10;  //包括3和10
+	like 和 not like  模糊匹配
+		_ 	表示任意的单个字符
+		% 	表示任意个字符
+		select * from 表名 where username not like '%强';
+	in 和 not in
+		select * from 表名 where id not in(1,2,2,3,4,3,432,32);
+
+	排序
+		order by 字段[ asc];(默认升序) ascent
+		order by 字段 desc;(倒序)  descent
+			 select * from 表名 order by 要排序的字段 desc;
+
+	限定条数
+		limit 5; 	//只查5条数据
+			select * from 表名 limit 5;
+		limit 5,5;	//跳过前5条数据，取后5条数据
+			 select * from 表名 limit 5,5;
+		分页公式: (当前页-1) * 每页显示条数
+
+整体：
+	select * from 表名 where条件 order by 字段 limit条件;

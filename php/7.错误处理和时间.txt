@@ -1,0 +1,110 @@
+错误处理
+    错误的分类
+        语法错误
+            这种错误最常见，但也最容易搞定；一旦出现，一行代码都不执行
+        运行时错误
+            在页面上给你报出来，有的会终止代码执行，有的不会
+        逻辑错误
+            这种错误最麻烦
+    
+    错误的级别
+        notice  
+            提示级别，不会影响后续代码的执行
+            如：输出不存在的变量
+        warning 
+            警告级别，也不会终止代码执行
+            如：include包含文件
+        error   
+            错误级别，会终止代码执行
+            如：语法错误或者require
+        deprecated 
+            反对级别，不赞成这样的使用，不会终止代码执行
+            如：(5.6用mysql_connect、echo mktime())
+        strict
+            语法不够严谨
+
+    处理错误：
+        1.用@屏蔽错误信息
+            有的错误屏蔽不了
+        2.通过配置文件php.ini控制错误的显示
+            display_errors
+                display_errors = off    //不显示任何错误
+                注意：关闭错误显示后，如果页面中有error级别的错误，服务器会直接返回500错误
+            error_reporting
+                error_reporting = E_ALL //显示所有错误
+        3.通过ini_set函数设置
+            ini_set('配置项', '配置值')
+            (不是所有的选项都可以用这个函数设置，具体哪些可以设置请参考手册：附录-》php.ini配置-》php.ini配置选项列表)
+        4.通过error_reporting函数设置错误级别
+            error_reporting(0); //屏蔽所有错误
+
+    自定义错误处理：
+        可以通过set_error_handler函数自己接管错误处理。
+        注意：致命错误无法被自定义(手册中搜索set_error_handler)
+
+    记录错误日志
+        1、以文件的方式记录(默认)
+            log_errors = On     开启错误日志的记录
+            error_log = C:/sb.txt 指定错误的路径
+        2、记录到操作系统日志中
+            error_log = syslog 指定错误的路径
+            我的电脑-》管理-》事件查看器-》windows日志-》应用程序
+
+        函数error_log('日志信息')，手动写日志
+
+
+PHP的时间和日期
+    获取Unix时间戳
+        time()  获取当前时间戳
+            因为Unix操作系统的诞生，1970年为Unix元年
+        mktime() 获取一个指定日期的时间戳
+            mktime(时，分，秒，月，日，年)
+            没有给的参数默认为当前的！
+        strtotime()将英文的时间日期描述转换为时间戳
+
+修改PHP默认时区：
+    1、改php.ini配置文件：
+        date.timezone = "PRC"   //默认为UTC
+            //PRC 中华人民共和国的简写
+            //People's Republic of China
+        
+        date.timezone = "Asia/shanghai"//上海
+        中原（Asia/Shanghai）       上海
+        陇蜀（Asia/Chongqing）      重庆
+        长白（Asia/Harbin）         哈尔滨
+        新藏（Asia/Urumqi）         乌鲁木齐(慢两小时)
+        昆仑（Asia/Kashgar）        喀什(慢两小时)
+        参考：五大时区的划分：http://www.niubb.net/a/2015/11-15/961925.html
+        date.timezone = "Asia/hong_kong"//香港
+    2、通过ini_set函数来临时设置
+        ini_set('date.timezone', 'PRC');
+    3、通过专门的函数来设置或者获取
+        date_default_timezone_set('PRC');
+
+        //获取当前的时区设置
+        date_default_timezone_get();
+
+    格式化输出：
+    date(格式字串[, 时间戳])
+        格式字串中不能被识别的字符将原样显示
+
+        echo date('Y');  //4位完完整年份
+        echo date('m');  //月份
+        echo date('d');  //日
+        echo date('H');  //时
+        echo date('i');  //分
+        echo date('s');  //秒
+
+        Y 完整的4位数年份
+        y 两位数的年份
+        m 有前导0的月份
+        n 没有前导0的月份
+        j 没有前导0的日
+        d 带前导0的日
+        H 带前导0的24小时制
+        h 带前导0的12小时制
+        g 不带前导0的12小时制
+        G 不带前导0的24小时制
+
+    获取微秒数： microtime([true])
+        给了参数true返回一个浮点数
