@@ -84,9 +84,14 @@
 		
 		$ `git add filename`
 		$ `git add .`
+		
 	2. 用命令`git commit`告诉Git，把文件提交到仓库
 			
 		$ git commit -m "在这个文件写了点东西" 
+
+	3. 对于已经修改提交过的注释，如果需要修改，可以借助 git commit --amend 来进行
+
+		$ git commit --amend 就会进入一个文本编辑界面
 
 * 取消暂存的文件
 	$ `git reset file`
