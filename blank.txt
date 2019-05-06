@@ -4,3 +4,9 @@
 
 
 php 必须学习 swoole、workerman 弥补一下自己的短板
+
+
+
+1. 查看端口是否通畅   telnet IP 端口号 如:telnet 127.0.0.1 80
+
+2.查看本机是否开启某个端口:netstat -an |findstr "端口号"  或 netstat -na |find "端口号"
