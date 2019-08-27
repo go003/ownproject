@@ -28,6 +28,25 @@
 	TRUNCATE语句不能在进行事务处理和表锁定的过程中进行，如果使用，将会报错。
 	只要表定义文件是合法的，则可以使用TRUNCATE TABLE把表重新创建为一个空表，即使数据或索引文件已经被破坏。
 
+## 查看binlog:
+		连接mysql> show binary logs; =>可以查看自己binlog的名称
+		连接mysql> show binlog events; =>可以查看已生成的binlog
+	
+		 
+
+
+## mysqlbinlog 命令
+		以用户可视的方式展示出二进制日志中的内容。同时，也可以将其中的内容读取出来，供其他MySQL实用程序使用。	
+	
+	导出成文本文件：
+		$> mysqlbinlog mysqld-bin.000001 > ./bin-log.txt
+
+		获取特定数据库条目
+		$> mysqlbinlog --database=DB_name mysqld-bin.000001 > ./bin-log.txt
+
+	查看按时间日志的问题
+		mysqlbinlog mysql-bin.00005 --startdatetime='时间' --stopdatetime='时间' --database=DB_name 
+
 ## 分组
 	分组概念： 将具有相同某个特点的东西放到一起。
 
